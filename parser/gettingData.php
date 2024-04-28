@@ -6,13 +6,12 @@ error_reporting(E_ALL);
 include "../db.php";
 //$CurrentDate = "02/03/2002";
 $CurrentDate = date('d/m/Y');
-
+echo $CurrentDate;
 $url="http://www.cbr.ru/scripts/XML_daily.asp?date_req=".$CurrentDate;  //Cсылка страницы для получения данных
 
 $GetData = file_get_contents($url);
 
 if ($GetData !== false) {
-
 
 	$GetDataConverted = mb_convert_encoding($GetData, 'UTF-8', 'Windows-1251'); // Преобразование кодировки в UTF-8
 	//echo $GetDataConverted; // Вывод содержимого страницы с тегами
@@ -33,14 +32,11 @@ if ($GetData !== false) {
     $result = pg_fetch_assoc($lastDate); // Значение столбца valdate последней строки
     
     if ($result) {
-			if ($result['valdate'] == $DateDataString) {
+			if ($result['valdate'] !== $DateDataString) {
 				$needCopy = 1;
 			}
-		} else {
-			$needCopy = 1;
     }
-	
-	
+	//echo $needCopy; echo $result['valdate'];
 	if (($CurrentDate == $DateDataString)&&($needCopy==1)){   /* Если текущая дата соответствует дате на странице, то собираем данные для загрузки в базу данных,
 													проверка нужна из-за того, что (date_req) может отсутствовать на сегодняшнее число, тогда делать ничего не нужно, также нужно предусмотреть, чтобы данные, которые уже были загружены за сегодняшнее число, не загрузились заново													*/
 		/*  Получение содержимого тегов */
