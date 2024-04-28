@@ -22,12 +22,16 @@ include "db.php";
 	<script src="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.js"></script>
 </head>
 <body>
+<div class="preloader">
+  <div class="preloader__row">
+    <div class="preloader__item"></div>
+    <div class="preloader__item"></div>
+  </div>
+</div>
 
-<div class="container">
 <?
 include "header.php";
 ?> 
-
 <!-- Модальное окно -->
 <div class="modal fade" id="staticBackdrop" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -116,8 +120,18 @@ include "header.php";
     </div>
   </div>
 </div>
-
-	<table id="ValuteTable" class="table table-bordered table-hover" style="width: 100%;">
+<div class="container rounded-top mb-4">
+	<ul class="nav nav-tabs">
+	  <li class="nav-item">
+		<a class="nav-link active" aria-current="page">Таблица данных</a>
+	  </li>
+	</ul>
+	<div class="d-flex justify-content-end mt-3">
+		<!-- Кнопка-триггер модального окна -->
+		<button id="myInput" type="button" class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">Построить график</button> 
+		<button id="myInput" type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Добавить валюту</button>
+	</div>
+	<table id="ValuteTable" class="table table-bordered table-hover">
 		<?php
 		$result2 = pg_query("select * from valute") or die('Ошибка');
 		?>
@@ -149,175 +163,23 @@ include "header.php";
 	</table>
 </div>
 
-
+	<script type="text/javascript" src="js/preloader.js"></script>
 	<script type="text/javascript">
 	$(document).ready(function() {
 		 $('#ValuteTable').DataTable({
 		   "paging": true,
+		   "responsive": true,
 		   "pagingType": "full_numbers",
 		   "language": {
 		   "url": "https://cdn.datatables.net/plug-ins/2.0.5/i18n/ru.json"}
 		 });
 	   });
 	</script>
+	<script type="text/javascript" src="js/addValute.js"></script>
+	<script type="text/javascript" src="js/delValute.js"></script>
+	<script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
+	<script type="text/javascript" src="js/buildChart.js"></script>
 	<script type="text/javascript">
-	$(document).ready(function() {
-		$('#SaveValute').click(function() {
-			var value1 = $('#ValID').val();
-			var value2 = $('#NumCode').val();
-			var value3 = $('#CharCode').val();
-			var value4 = $('#Nominal').val();
-			var value5 = $('#ValName').val();
-			var value6 = $('#ValValue').val();
-			var value7 = $('#VunitRate').val();
-			var value8 = $('#ValDate').val();
-			$.ajax({
-				type: 'POST',
-				url: 'addValute.php',
-				data: {
-					
-					ValID: value1,
-					ValNumcode: value2,
-					ValCharcode: value3,
-					ValNominal: value4,
-					ValName: value5,
-					ValValue: value6,
-					ValVunitrate: value7,
-					ValDate: value8
-				},
-				success: function(data) {
-					//alert('Данные успешно добавлены в базу данных!');
-				}
-			});
-		});
-	});
-	</script>
-	<script type="text/javascript">
-	/* Функция удаления валюты из таблицы */
-		function DelValute(obj) {
-			var idv = obj.id;
-			console.log(idv);
-			$.ajax({
-					url:"delValute.php",
-					type: "POST",
-					data: {ValuteID: idv},
-					dataType: 'json',
-					beforeSend: function(data){
-				},
-					success: function(data){
-						alert(data.answer);
-						location.reload(); 
-					}
-				})
-			
-		}
-	</script>
-	<script type="text/javascript" src="/bootstrap.bundle.min.js"></script>
-	<script type="text/javascript">
-    function buildChart(dates, values) {
-        var data = {
-            labels: dates,
-            series: [values]
-        };
-		var minNumDatesToShowAll = 10; 
-
-		var options = {
-			axisX: {
-				labelInterpolationFnc: function(value, index) {
-					if (dates.length < minNumDatesToShowAll) {
-						return value; // Выводим каждую дату, если их количество меньше 10
-					} else {
-						// Если количество дат больше 10, отображаем каждую десятую дату
-						if (index % 10 === 0) {
-							return value;
-						} else {
-							return null; // Не выводим остальные даты
-						}
-					}
-				}
-			}
-		};
-
-        new Chartist.Line('#chart', data, options);
-    }
-
-
-	document.getElementById('SelectName').addEventListener('change', function() {
-		var selectedValue = this.value;
-		//var selectedText = this.options[this.selectedIndex].text;
-		var startDate	= document.getElementById('start').value;
-		var endDate	= document.getElementById('end').value;
-		$.ajax({
-			url: 'search.php',
-			type: 'POST',
-			data: { startDate: startDate, endDate: endDate, selectedValue: selectedValue },
-			success: function(response) {
-				var responseData = JSON.parse(response);
-				myCustomFunction(responseData);
-			},
-			error: function() {
-				console.log('Ошибка при выполнении AJAX запроса');
-			}
-		});
-	});
-
-	
-    document.getElementById('start').addEventListener('change', function() {
-        //alert('Начальная дата изменена на: ' + this.value);
-		
-		var startDate = this.value;
-		var endDate	= document.getElementById('end').value;
-		var selectedValue =  document.getElementById('SelectName').value;
-		$.ajax({
-			url: 'search.php',
-			type: 'POST',
-			data: { startDate: startDate, endDate: endDate, selectedValue: selectedValue},
-			success: function(response) {
-				var responseData = JSON.parse(response);
-				myCustomFunction(responseData);
-			},
-			error: function() {
-				console.log('Ошибка при выполнении AJAX запроса');
-			}
-		});
-    });
-
-    document.getElementById('end').addEventListener('change', function() {
-        //alert('Конечная дата изменена на: ' + this.value);
-		var selectedValue =  document.getElementById('SelectName').value;
-		var endDate = this.value;
-		var startDate	= document.getElementById('start').value;
-		$.ajax({
-			url: 'search.php',
-			type: 'POST',
-			data: { startDate: startDate, endDate: endDate, selectedValue: selectedValue },
-			success: function(response) {
-				var responseData = JSON.parse(response);
-				myCustomFunction(responseData);
-			},
-			error: function() {
-				console.log('Ошибка при выполнении AJAX запроса');
-			}
-		});
-    });
-	
-	function myCustomFunction(data) {
-    
-    var allValdates = [];
-    var allValues = [];
-
-    data.forEach(function(item) {
-        //console.log('Дата: ' + item.valdate);
-        //console.log('Значение: ' + item.value);
-        allValdates.push(item.valdate);
-        allValues.push(item.value);
-		values =  allValues;
-		dates = allValdates;
-    });
-		buildChart(allValdates, allValues);
-		$('button#saveChartBtn').css('display', 'block');
-	}
-	
 	document.getElementById('saveChartBtn').addEventListener('click', function() {
     var dates1 = dates;
     var values1 = values;
