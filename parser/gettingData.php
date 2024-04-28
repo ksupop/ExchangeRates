@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-include "db.php";
+include "../db.php";
 //$CurrentDate = "02/03/2002";
 $CurrentDate = date('d/m/Y');
 
