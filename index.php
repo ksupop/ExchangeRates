@@ -20,6 +20,7 @@ include "db.php";
 	<!-- Подключение DataTables -->
 	<link href="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.css" rel="stylesheet">
 	<script src="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.js"></script>
+	<!--<script src="https://cdn.datatables.net/v/bs5/dt-2.0.5/sl-2.0.1/datatables.min.js"></script>-->
 </head>
 <body>
 <div class="preloader">
@@ -126,11 +127,15 @@ include "header.php";
 		<a class="nav-link active" aria-current="page">Таблица данных</a>
 	  </li>
 	</ul>
+	
 	<div class="d-flex justify-content-end mt-3">
 		<!-- Кнопка-триггер модального окна -->
 		<button id="myInput" type="button" class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">Построить график</button> 
 		<button id="myInput" type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Добавить валюту</button>
 	</div>
+	<div class="row">
+	<div class="col-4"><select id="nameFltr" class="form-select" multiple></select></div>
+	<div class="col-4"><select id="dateFltr" class="form-select" multiple></select></div>
 	<table id="ValuteTable" class="table table-bordered table-hover">
 		<?php
 		$result2 = pg_query("select * from valute") or die('Ошибка');
@@ -166,14 +171,48 @@ include "header.php";
 	<script type="text/javascript" src="js/preloader.js"></script>
 	<script type="text/javascript">
 	$(document).ready(function() {
-		 $('#ValuteTable').DataTable({
+		var table =  $('#ValuteTable').DataTable({
 		   "paging": true,
 		   "responsive": true,
 		   "pagingType": "full_numbers",
 		   "language": {
-		   "url": "https://cdn.datatables.net/plug-ins/2.0.5/i18n/ru.json"}
+		   "url": "https://cdn.datatables.net/plug-ins/2.0.5/i18n/ru.json"},
+		   "initComplete": function () {
+				this.api().columns([2]).every( function () {
+					var column = this;
+					//console.log(column);
+					var select = $("#nameFltr");
+					column.data().unique().sort().each( function ( d, j ) {
+					select.append( '<option value="'+d+'">'+d+'</option>' )
+					});
+				});
+				this.api().columns([4]).every( function () {
+					var column = this;
+					//console.log(column);
+					var select = $("#dateFltr");
+					column.data().unique().sort().each( function ( d, j ) {
+					  select.append( '<option value="'+d+'">'+d+'</option>' )
+					});
+				});
+			}
 		 });
-	   });
+		 $('#dateFltr').on('change', function(){  //фильтрация по дате
+		 var search = [];
+			$.each($('#dateFltr option:selected'), function(){
+            search.push($(this).val());
+			});
+			search = search.join('|');
+			table.column(4).search(search, true, false).draw();
+		});
+		$('#nameFltr').on('change', function(){  //фильтрация по названию
+			var search = [];
+			$.each($('#nameFltr option:selected'), function(){
+            search.push($(this).val());
+			});
+			search = search.join('|');
+			table.column(2).search(search, true, false).draw();
+		});
+	});
 	</script>
 	<script type="text/javascript" src="js/addValute.js"></script>
 	<script type="text/javascript" src="js/delValute.js"></script>
