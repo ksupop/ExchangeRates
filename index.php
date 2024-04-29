@@ -20,7 +20,9 @@ include "db.php";
 	<!-- Подключение DataTables -->
 	<link href="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.css" rel="stylesheet">
 	<script src="https://cdn.datatables.net/v/bs5/dt-2.0.5/datatables.min.js"></script>
-	<!--<script src="https://cdn.datatables.net/v/bs5/dt-2.0.5/sl-2.0.1/datatables.min.js"></script>-->
+	<!-- Подключение select2 -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 </head>
 <body>
 <div class="preloader">
@@ -135,7 +137,7 @@ include "header.php";
 	</div>
 	<div class="row">
 	<div class="col-4"><select id="nameFltr" class="form-select" multiple></select></div>
-	<div class="col-4"><select id="dateFltr" class="form-select" multiple></select></div>
+	<div class="col-3"><select id="dateFltr" class="form-select" multiple></select></div>
 	<table id="ValuteTable" class="table table-bordered table-hover">
 		<?php
 		$result2 = pg_query("select * from valute") or die('Ошибка');
@@ -211,6 +213,14 @@ include "header.php";
 			});
 			search = search.join('|');
 			table.column(2).search(search, true, false).draw();
+		});
+		$('#nameFltr').select2({
+			placeholder: 'Выбрать валюты',
+			allowClear: true
+		});
+		$('#dateFltr').select2({
+			placeholder: 'Выбрать даты',
+			allowClear: true
 		});
 	});
 	</script>
