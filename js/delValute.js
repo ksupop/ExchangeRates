@@ -3,7 +3,7 @@
 			var idv = obj.id;
 			console.log(idv);
 			$.ajax({
-					url:"delValute.php",
+					url:"post_scripts/delValute.php",
 					type: "POST",
 					data: {ValuteID: idv},
 					dataType: 'json',

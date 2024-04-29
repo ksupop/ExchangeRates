@@ -10,7 +10,7 @@ $(document).ready(function() {
 			var value8 = $('#ValDate').val();
 			$.ajax({
 				type: 'POST',
-				url: 'addValute.php',
+				url: 'post_scripts/addValute.php',
 				data: {
 					
 					ValID: value1,

@@ -32,7 +32,7 @@ function buildChart(dates, values) {  //функция построения гр
 		var startDate	= document.getElementById('start').value;
 		var endDate	= document.getElementById('end').value;
 		$.ajax({
-			url: 'getGraphData.php',
+			url: 'post_scripts/getGraphData.php',
 			type: 'POST',
 			data: { startDate: startDate, endDate: endDate, selectedValue: selectedValue },
 			success: function(response) {
@@ -53,7 +53,7 @@ function buildChart(dates, values) {  //функция построения гр
 		var endDate	= document.getElementById('end').value;
 		var selectedValue =  document.getElementById('SelectName').value;
 		$.ajax({
-			url: 'getGraphData.php',
+			url: 'post_scripts/getGraphData.php',
 			type: 'POST',
 			data: { startDate: startDate, endDate: endDate, selectedValue: selectedValue},
 			success: function(response) {
@@ -72,7 +72,7 @@ function buildChart(dates, values) {  //функция построения гр
 		var endDate = this.value;
 		var startDate	= document.getElementById('start').value;
 		$.ajax({
-			url: 'getGraphData.php',
+			url: 'post_scripts/getGraphData.php',
 			type: 'POST',
 			data: { startDate: startDate, endDate: endDate, selectedValue: selectedValue },
 			success: function(response) {
