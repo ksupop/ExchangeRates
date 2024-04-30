@@ -1,10 +1,20 @@
-<?
+<?php
 
 include "../db.php";
 
-$uid = $_POST['ValuteID'];
+// Проверяем, что переменная $_POST['ValuteID'] установлена и является числом
+if(isset($_POST['ValuteID']) && is_numeric($_POST['ValuteID'])) {
+    $uid = $_POST['ValuteID'];
 
-$DeleteResult = pg_query($dbconn,'delete from valute where key = '.$uid.'') or die ('Ошибка'); 
+    $stmt = pg_prepare($dbconn, "delete_valute", 'delete from valute where key = $1');
+    $result = pg_execute($dbconn, "delete_valute", array($uid));
 
-echo json_encode(array('answer'=>"Удалено"));
+    if ($result) {
+        echo json_encode(array('answer' => "Удалено"));
+    } else {
+        echo json_encode(array('error' => "Ошибка при удалении"));
+    }
+} else {
+    echo json_encode(array('error' => "Неверные данные"));
+}
 ?>
