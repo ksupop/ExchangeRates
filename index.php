@@ -228,30 +228,7 @@ include "header.php";
 	<script type="text/javascript" src="js/delValute.js"></script>
 	<script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
 	<script type="text/javascript" src="js/buildChart.js"></script>
-	<script type="text/javascript">
-	document.getElementById('saveChartBtn').addEventListener('click', function() {
-    var dates1 = dates;
-    var values1 = values;
-
-    var chartData = { 
-        dates: dates1, 
-        values: values1
-    };
-
-    var jsonData = JSON.stringify(chartData);
-    var blob = new Blob([jsonData], { type: 'application/json' });
-    var url = URL.createObjectURL(blob);
-
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = 'chart_data.json';
-    document.body.appendChild(a);
-    a.click();
-
-    URL.revokeObjectURL(url);
-});
-
-</script>
+	<script type="text/javascript" src="js/saveDataChart.js"></script>
 </body>
 
 </html>
