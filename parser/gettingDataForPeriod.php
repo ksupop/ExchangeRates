@@ -3,9 +3,9 @@
 
 include "../db.php";
 
-$CurrentDate = '28/04/2024'; // Дата, до которой необходимо получить данные
+$CurrentDate = '01/05/2024'; // Дата, до которой необходимо получить данные
 
-$days = 100; //Количество дней, за которые возьмем данные
+$days = 102; //Количество дней, за которые возьмем данные
 
 for($j=0; $j< $days; $j++){
 	$CurrentDateType = DateTime::createFromFormat('d/m/Y', $CurrentDate);
@@ -19,7 +19,7 @@ for($j=0; $j< $days; $j++){
 
 	if ($GetData !== false) {
 		$GetDataConverted = mb_convert_encoding($GetData, 'UTF-8', 'Windows-1251'); // Преобразование кодировки в UTF-8
-		echo $GetDataConverted; // Вывод содержимого страницы с тегами
+		//echo $GetDataConverted; // Вывод содержимого страницы с тегами
 
 		echo "<pre>";
 		preg_match("/Date=\"(\d{2})\.(\d{2})\.(\d{4})\"/is", $GetDataConverted, $DateData); //Получение даты со страницы
@@ -28,7 +28,8 @@ for($j=0; $j< $days; $j++){
 
 		//echo $DateDataString;
 		//echo $CurrentDate;
-		$CurrentDate = $DateDataString;
+		//$CurrentDate = $DateDataString;
+		$DateDataString = $CurrentDate;
 		/*//if ($CurrentDate == $DateDataString){    Если текущая дата соответствует дате на странице, то собираем данные для загрузки в базу данных,
 														проверка нужна из-за того, что (date_req) может отсутствовать на сегодняшнее число, тогда делать ничего не нужно */
 			/*  Получение содержимого тегов */
