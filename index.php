@@ -174,6 +174,7 @@ include "header.php";
 	<script type="text/javascript">
 	$(document).ready(function() {
 		var table =  $('#ValuteTable').DataTable({
+			"order": [[4, "desc"]] ,// Сортировка по дате (индекс 4) по убыванию (desc)
 		   "paging": true,
 		   "responsive": true,
 		   "pagingType": "full_numbers",
@@ -192,7 +193,7 @@ include "header.php";
 					var column = this;
 					//console.log(column);
 					var select = $("#dateFltr");
-					column.data().unique().sort().each( function ( d, j ) {
+					column.data().unique().sort().reverse().each( function ( d, j ) {
 					  select.append( '<option value="'+d+'">'+d+'</option>' )
 					});
 				});
